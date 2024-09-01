@@ -186,7 +186,10 @@
         <div class="settings">
             <div class="form-group">
                 <label for="ip">IP-adress</label>
-                <input type="text" id="ip" placeholder="IP-adress">
+                <input type="text" id="ip" placeholder="IP-adress" list="ip-list">
+                <datalist id="ip-list">
+                    <!-- Dynamiska IP-adresser kommer att fyllas här -->
+                </datalist>
             </div>
             <div class="form-group">
                 <label for="user">Användarnamn</label>
@@ -206,7 +209,7 @@
             <h2>Hämta Taggar</h2>
             <div class="form-group">
                 <label for="tags">Taggar att hämta</label>
-                <textarea id="tags" placeholder="Ange taggar, separerade med komma"></textarea>
+                <textarea id="tags" placeholder="Ange taggar,&#10;VV01_GT11_PV&#10;VV01_GT11_SP"></textarea>
             </div>
 
             <div class="form-group">

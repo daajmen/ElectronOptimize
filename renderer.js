@@ -1,16 +1,15 @@
-let fetchInterval; // Globala variabel för att hålla koll på intervallet
+let fetchInterval;
 
-// Uppdatera output-funktionen för att visa meddelanden
+// Funktion för att uppdatera output
 function updateOutput(message) {
     const outputElement = document.getElementById('output');
-    outputElement.innerText += message + '\n'; // Lägg till meddelandet i output-rutan
+    outputElement.innerText += message + '\n';
 }
 
+// Funktion för att hämta token
 async function fetchToken(ip, user, password) {
     try {
         updateOutput('Hämtar token...');
-        console.log('Attempting to fetch token'); // Felsökningsmeddelande
-
         const response = await fetch(`http://${ip}/api/v1/access/token`, {
             method: 'POST',
             headers: {
@@ -26,104 +25,89 @@ async function fetchToken(ip, user, password) {
         if (response.ok) {
             const data = await response.json();
             updateOutput('Token hämtad.');
-            return data.Token; // Returnera token från servern
+            return data.Token;
         } else {
-            console.log('Token request failed', response); // Felsökningsmeddelande
             throw new Error('Fel vid hämtning av token');
         }
     } catch (error) {
         updateOutput('Något gick fel: ' + error.message);
-        console.error(error); // Felsökningsmeddelande
         throw error;
     }
 }
 
+// Funktion för att hämta data
 async function fetchData(ip, token, tags) {
     try {
         const tagParams = tags.map(tag => `tag=${encodeURIComponent(tag)}`).join('&');
         const url = `http://${ip}/api/v1/tag/read?${tagParams}`;
 
         updateOutput(`Hämtar data från: ${url}`);
-        console.log('Attempting to fetch data'); // Felsökningsmeddelande
-
         const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'accept': 'application/json',
-                'token': token // Använd 'token' header istället för 'Authorization'
+                'token': token
             }
         });
 
         if (response.ok) {
             const data = await response.json();
             updateOutput('Data hämtad:');
-            updateOutput(JSON.stringify(data, null, 2)); // Formatera JSON för läsbarhet
-
-            // Uppdatera tabellen med den hämtade datan
+            updateOutput(JSON.stringify(data, null, 2));
             updateTable(data);
         } else {
-            console.log('Data request failed', response); // Felsökningsmeddelande
             updateOutput('Fel vid hämtning av data');
         }
     } catch (error) {
         updateOutput('Något gick fel: ' + error.message);
-        console.error(error); // Felsökningsmeddelande
     }
 }
 
+// Funktion för att uppdatera tabellen
 function updateTable(data) {
     const tableBody = document.querySelector('#data-table tbody');
-    tableBody.innerHTML = ''; // Töm tidigare data
+    tableBody.innerHTML = ''; 
 
     for (const tag in data) {
         if (data.hasOwnProperty(tag)) {
             const row = document.createElement('tr');
 
-            // Taggnamn
             const tagCell = document.createElement('td');
             tagCell.textContent = tag;
             row.appendChild(tagCell);
 
-            // Värde
             const valueCell = document.createElement('td');
             valueCell.textContent = data[tag].Value !== null ? data[tag].Value : 'N/A';
             row.appendChild(valueCell);
 
-            // Tidsstämpel
             const timestampCell = document.createElement('td');
             timestampCell.textContent = data[tag].Timestamp || 'N/A';
             row.appendChild(timestampCell);
 
-            // Status
             const statusCell = document.createElement('td');
             statusCell.textContent = data[tag].Status || 'N/A';
             row.appendChild(statusCell);
 
-            // Lägg till raden i tabellen
             tableBody.appendChild(row);
         }
     }
 }
 
-
+// Funktion för att hantera hämtning
 function handleFetch() {
-    console.log('handleFetch triggered'); // Felsökningsmeddelande
-
     const ip = document.getElementById('ip').value;
     const user = document.getElementById('user').value;
     const password = document.getElementById('password').value;
-    const tags = document.getElementById('tags').value.split('\n').map(tag => tag.trim()); // Dela upp på radbrytningar och trimma
-    const interval = parseInt(document.getElementById('interval').value) * 1000; // Konvertera till millisekunder
-
-    console.log('IP:', ip);
-    console.log('User:', user);
-    console.log('Tags:', tags);
-    console.log('Interval:', interval, 'ms');
+    const tags = document.getElementById('tags').value.split('\n').map(tag => tag.trim());
+    const interval = parseInt(document.getElementById('interval').value) * 1000;
 
     if (!ip || !user || !password || tags.length === 0 || isNaN(interval) || interval <= 0) {
         updateOutput('Vänligen fyll i alla fält korrekt.');
         return;
     }
+
+    // Spara IP-adressen i localStorage
+    saveIpToLocalStorage(ip);
 
     // Rensa tidigare intervall om det finns
     if (fetchInterval) {
@@ -132,9 +116,8 @@ function handleFetch() {
     }
 
     fetchToken(ip, user, password).then(token => {
-        fetchData(ip, token, tags); // Hämta data direkt efter token
+        fetchData(ip, token, tags);
 
-        // Ställ in intervall för att hämta data kontinuerligt
         fetchInterval = setInterval(() => {
             fetchData(ip, token, tags);
         }, interval);
@@ -144,3 +127,31 @@ function handleFetch() {
         updateOutput('Kunde inte hämta token: ' + error.message);
     });
 }
+
+// Spara IP-adressen i localStorage och uppdatera dropdown
+function saveIpToLocalStorage(ip) {
+    let savedIPs = JSON.parse(localStorage.getItem('savedIPs')) || [];
+    if (!savedIPs.includes(ip)) {
+        savedIPs.push(ip);
+        localStorage.setItem('savedIPs', JSON.stringify(savedIPs));
+        updateIpDropdown();
+    }
+}
+
+// Uppdatera dropdown med sparade IP-adresser
+function updateIpDropdown() {
+    const ipList = document.getElementById('ip-list');
+    ipList.innerHTML = ''; // Rensa befintliga alternativ
+    const savedIPs = JSON.parse(localStorage.getItem('savedIPs')) || [];
+    savedIPs.forEach(ip => {
+        const option = document.createElement('option');
+        option.value = ip;
+        ipList.appendChild(option);
+    });
+}
+
+// När sidan laddas, uppdatera dropdown-listan med sparade IP-adresser
+document.addEventListener('DOMContentLoaded', () => {
+    updateIpDropdown();
+    document.getElementById('fetch-button').addEventListener('click', handleFetch);
+});
