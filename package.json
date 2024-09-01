@@ -1,0 +1,17 @@
+{
+  "name": "electronoptimize",
+  "version": "1.0.0",
+  "description": "Api calls to webport",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Alexander Lundqvist",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^32.0.1"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security"
+  }
+}
