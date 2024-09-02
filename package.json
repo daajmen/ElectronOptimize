@@ -12,6 +12,8 @@
     "electron": "^32.0.1"
   },
   "dependencies": {
-    "fs": "^0.0.1-security"
+    "chart.js": "^4.4.4",
+    "fs": "^0.0.1-security",
+    "sqlite3": "^5.1.7"
   }
 }

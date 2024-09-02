@@ -1,5 +1,6 @@
 let fetchInterval;
 
+
 // Funktion för att uppdatera output
 function updateOutput(message) {
     const outputElement = document.getElementById('output');
@@ -55,6 +56,55 @@ async function fetchData(ip, token, tags) {
             updateOutput('Data hämtad:');
             updateOutput(JSON.stringify(data, null, 2));
             updateTable(data);
+
+            let measurementData = {
+                timestamp: null,
+                measurement: null,
+                setpoint: null,
+                valve: null,
+                P: null,
+                I: null,
+                D: null
+            };
+
+
+            for (const tag in data) {
+                if (data.hasOwnProperty(tag)) {
+                    const timestamp = data[tag].Timestamp;
+                    const value = data[tag].Value;
+                    
+                    // Använd rätt värden för att spara i databasen, exempel:
+                    // [timestamp, measurement, setpoint, valve, P, I, D],
+                   // Uppdatera objektet med rätt värden beroende på tagg
+                    measurementData.timestamp = timestamp;
+
+                    if (tag.endsWith('_PV')) {
+                        measurementData.measurement = value;
+                    } else if (tag.endsWith('_SP')) {
+                        measurementData.setpoint = value;
+                    } else if (tag.endsWith('_OP')) {
+                        measurementData.valve = value;
+                    } else if (tag.endsWith('_P')) {
+                        measurementData.P = value;
+                    } else if (tag.endsWith('_I')) {
+                        measurementData.I = value;
+                    } else if (tag.endsWith('_D')) {
+                        measurementData.D = value;
+                    }
+                }
+            }
+
+            // När alla taggar har bearbetats, spara allt till databasen
+
+            window.electron.saveMeasurement(
+                measurementData.timestamp,
+                measurementData.measurement,
+                measurementData.setpoint,
+                measurementData.valve,
+                measurementData.P,
+                measurementData.I,
+                measurementData.D
+            );
         } else {
             updateOutput('Fel vid hämtning av data');
         }
@@ -150,8 +200,6 @@ function updateIpDropdown() {
     });
 }
 
-// När sidan laddas, uppdatera dropdown-listan med sparade IP-adresser
 document.addEventListener('DOMContentLoaded', () => {
     updateIpDropdown();
-    document.getElementById('fetch-button').addEventListener('click', handleFetch);
 });

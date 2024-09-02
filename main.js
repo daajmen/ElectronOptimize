@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const { saveMeasurement } = require('./database');
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -26,6 +27,12 @@ ipcMain.handle('load-data', (event, filePath) => {
     } else {
         return null;
     }
+});
+
+// Hantera IPC för att spara mätningar
+ipcMain.handle('save-measurement', (event, data) => {
+    const { timestamp, measurement, setpoint, valve, P, I, D } = data;
+    saveMeasurement(timestamp, measurement, setpoint, valve, P, I, D); // Använd funktionen från database.js
 });
 
 app.whenReady().then(createWindow);
