@@ -1,5 +1,10 @@
+import { fetchToken, fetchData } from './services/api.js';
+
 let fetchInterval;
 
+document.addEventListener('DOMContentLoaded', () => {
+    updateIpDropdown();
+});
 
 // Funktion för att uppdatera output
 function updateOutput(message) {
@@ -7,116 +12,10 @@ function updateOutput(message) {
     outputElement.innerText += message + '\n';
 }
 
-// Funktion för att hämta token
-async function fetchToken(ip, user, password) {
-    try {
-        updateOutput('Hämtar token...');
-        const response = await fetch(`http://${ip}/api/v1/access/token`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'accept': 'application/json'
-            },
-            body: JSON.stringify({
-                username: user,
-                password: password
-            })
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            updateOutput('Token hämtad.');
-            return data.Token;
-        } else {
-            throw new Error('Fel vid hämtning av token');
-        }
-    } catch (error) {
-        updateOutput('Något gick fel: ' + error.message);
-        throw error;
-    }
-}
-
-// Funktion för att hämta data
-async function fetchData(ip, token, tags) {
-    try {
-        const tagParams = tags.map(tag => `tag=${encodeURIComponent(tag)}`).join('&');
-        const url = `http://${ip}/api/v1/tag/read?${tagParams}`;
-
-        updateOutput(`Hämtar data från: ${url}`);
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'accept': 'application/json',
-                'token': token
-            }
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            updateOutput('Data hämtad:');
-            updateOutput(JSON.stringify(data, null, 2));
-            updateTable(data);
-
-            let measurementData = {
-                timestamp: null,
-                measurement: null,
-                setpoint: null,
-                valve: null,
-                P: null,
-                I: null,
-                D: null
-            };
-
-
-            for (const tag in data) {
-                if (data.hasOwnProperty(tag)) {
-                    const timestamp = data[tag].Timestamp;
-                    const value = data[tag].Value;
-                    
-                    // Använd rätt värden för att spara i databasen, exempel:
-                    // [timestamp, measurement, setpoint, valve, P, I, D],
-                   // Uppdatera objektet med rätt värden beroende på tagg
-                    measurementData.timestamp = timestamp;
-
-                    if (tag.endsWith('_PV')) {
-                        measurementData.measurement = value;
-                    } else if (tag.endsWith('_SP')) {
-                        measurementData.setpoint = value;
-                    } else if (tag.endsWith('_OP')) {
-                        measurementData.valve = value;
-                    } else if (tag.endsWith('_P')) {
-                        measurementData.P = value;
-                    } else if (tag.endsWith('_I')) {
-                        measurementData.I = value;
-                    } else if (tag.endsWith('_D')) {
-                        measurementData.D = value;
-                    }
-                }
-            }
-
-            // När alla taggar har bearbetats, spara allt till databasen
-
-            window.electron.saveMeasurement(
-                measurementData.timestamp,
-                measurementData.measurement,
-                measurementData.setpoint,
-                measurementData.valve,
-                measurementData.P,
-                measurementData.I,
-                measurementData.D
-            );
-        } else {
-            updateOutput('Fel vid hämtning av data');
-        }
-    } catch (error) {
-        updateOutput('Något gick fel: ' + error.message);
-    }
-}
-
 // Funktion för att uppdatera tabellen
 function updateTable(data) {
     const tableBody = document.querySelector('#data-table tbody');
-    tableBody.innerHTML = ''; 
+    tableBody.innerHTML = '';
 
     for (const tag in data) {
         if (data.hasOwnProperty(tag)) {
@@ -165,11 +64,11 @@ function handleFetch() {
         updateOutput('Tidigare intervall stoppat.');
     }
 
-    fetchToken(ip, user, password).then(token => {
-        fetchData(ip, token, tags);
+    fetchToken(ip, user, password, updateOutput).then(token => {
+        fetchData(ip, token, tags, updateOutput, updateTable, window.electron.saveMeasurement);
 
         fetchInterval = setInterval(() => {
-            fetchData(ip, token, tags);
+            fetchData(ip, token, tags, updateOutput, updateTable, window.electron.saveMeasurement);
         }, interval);
 
         updateOutput(`Hämtning av data startat med ${interval / 1000} sekunders intervall.`);
@@ -178,6 +77,8 @@ function handleFetch() {
     });
 }
 
+// Gör handleFetch globalt tillgänglig
+window.handleFetch = handleFetch;
 // Spara IP-adressen i localStorage och uppdatera dropdown
 function saveIpToLocalStorage(ip) {
     let savedIPs = JSON.parse(localStorage.getItem('savedIPs')) || [];
@@ -200,6 +101,4 @@ function updateIpDropdown() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    updateIpDropdown();
-});
+
