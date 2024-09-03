@@ -3,182 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Taggdata Hämtare</title>
-    <style>
-        /* Allmänna stilar */
-        body {
-            background-color: #1f1f1f; /* Mörk bakgrund för hela appen */
-            color: #e0e0e0; /* Ljusgrå text för kontrast */
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        /* Header-stil för inställningar */
-        .header {
-            background-color: #2c2c2c; /* Mörkare grå för headern */
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
-        }
-
-        .settings {
-            display: flex;
-            gap: 10px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #b0b0b0; /* Ljusgrå för etiketter */
-            font-size: 14px;
-        }
-
-        .form-group input {
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #3c3c3c; /* Mörkare kant */
-            background-color: #3b3b3b; /* Mörk grå för inmatningsfält */
-            color: #e0e0e0;
-            font-size: 14px;
-            width: 150px;
-        }
-
-        /* Huvudsektion */
-        .main {
-            display: flex;
-            flex-grow: 1;
-            padding: 20px;
-            gap: 20px;
-            overflow: hidden;
-        }
-
-        /* Tagg- och intervallinmatning */
-        .tag-input-container {
-            flex-grow: 1;
-            background-color: #2c2c2c; /* Samma mörkare grå för tag-input */
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .tag-input-container h2 {
-            margin-top: 0;
-            color: #d1d1d1; /* Ljusare grå för rubriker */
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-
-        .tag-input-container textarea {
-            resize: vertical;
-            height: 80px;
-            margin-bottom: 15px;
-        }
-
-        .tag-input-container input[type="number"] {
-            width: 100%;
-            margin-bottom: 15px;
-        }
-
-        .tag-input-container button {
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            background-color: #4a90e2; /* Dämpad blå för knappar */
-            color: #ffffff;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .tag-input-container button:hover {
-            background-color: #357ab8; /* Mörkare blå på hover */
-        }
-
-        /* Output-sektion */
-        .output-container {
-            width: 350px;
-            background-color: #2c2c2c; /* Samma mörkare grå för output */
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .output-container h2 {
-            margin-top: 0;
-            color: #d1d1d1; /* Ljusare grå för rubriker */
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-
-        #output {
-            flex-grow: 1;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            background-color: #3b3b3b; /* Mörkare bakgrund för output-rutan */
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #3c3c3c; /* Mörkare kant för output */
-        }
-
-        /* Scrollbar anpassning för output */
-        #output::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #output::-webkit-scrollbar-track {
-            background: #2c2c2c;
-        }
-
-        #output::-webkit-scrollbar-thumb {
-            background-color: #4a90e2;
-            border-radius: 4px;
-        }
-
-        /* Responsiv design */
-        @media (max-width: 1200px) {
-            .main {
-                flex-direction: column;
-            }
-
-            .output-container {
-                width: 100%;
-            }
-        }
-      /* Lägg till nya stilar för tabellen */        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #4a4a4a;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #3b3b3b;
-            color: #e0e0e0;
-        }
-        td {
-            background-color: #2c2c2c;
-            color: #e0e0e0;
-        }
-    </style>
-
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <!-- Header med inställningar -->
@@ -235,16 +60,13 @@
             </table>
         </div>
 
-
         <!-- Output-sektion -->
         <div class="output-container">
             <h2>Output</h2>
             <div id="output"></div>
         </div>
     </div>
-
-    
-
+    <!-- Extern JavaScript-fil -->
     <script src="renderer.js"></script>
 </body>
 </html>
