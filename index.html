@@ -43,27 +43,34 @@
             </div>
 
             <button onclick="handleFetch()">Starta hämtning</button>
-            
-            <!-- Här lägger vi till tabellen -->
-            <table id="data-table">
-                <thead>
-                    <tr>
-                        <th>Taggnamn</th>
-                        <th>Värde</th>
-                        <th>Tidsstämpel</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Dynamiskt genererade rader kommer här -->
-                </tbody>
-            </table>
+        
         </div>
 
-        <!-- Output-sektion -->
-        <div class="output-container">
-            <h2>Output</h2>
-            <div id="output"></div>
+        <!-- Höger container för Data Table och Output -->
+        <div class="right-container">
+            <!-- Tabellcontainer -->
+            <div class="table-container">
+                <h2>Data Table</h2>
+                <table id="data-table" class="table">
+                    <thead>
+                        <tr>
+                            <th>Taggnamn</th>
+                            <th>Värde</th>
+                            <th>Tidsstämpel</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamiskt genererade rader kommer här -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Output-sektion -->
+            <div class="output-container">
+                <h2>Output</h2>
+                <div id="output"></div>
+            </div>
         </div>
     </div>
     <!-- Extern JavaScript-fil -->

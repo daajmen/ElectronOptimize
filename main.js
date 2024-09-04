@@ -5,7 +5,7 @@ const { saveMeasurement } = require('./database');
 
 function createWindow() {
     const win = new BrowserWindow({
-        width: 800,
+        width: 1280,
         height: 600,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),

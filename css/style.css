@@ -1,6 +1,3 @@
-
-
-
 /* Allmänna stilar */
 body {
     background-color: #1f1f1f; /* Mörk bakgrund för hela appen */
@@ -55,12 +52,13 @@ body {
     flex-grow: 1;
     padding: 20px;
     gap: 20px;
-    overflow: hidden;
+    height: 100%; /* Se till att main fyller hela höjden */
+    box-sizing: border-box;
 }
 
 /* Tagg- och intervallinmatning */
 .tag-input-container {
-    flex-grow: 1;
+    flex: 1; /* Låt tag-input ta upp en del av bredden */
     background-color: #2c2c2c; /* Samma mörkare grå för tag-input */
     padding: 20px;
     border-radius: 10px;
@@ -102,26 +100,61 @@ body {
     background-color: #357ab8; /* Mörkare blå på hover */
 }
 
-/* Output-sektion */
-.output-container {
-    width: 350px;
-    background-color: #2c2c2c; /* Samma mörkare grå för output */
+/* Höger sektion som innehåller Data Table och Output */
+.right-container {
+    flex: 2; /* Låt denna container ta upp större del av bredden */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Mellanrum mellan Data Table och Output */
+}
+
+/* Tabellcontainer */
+.table-container {
+    flex: 1; /* Låt tabellen fylla halva höjden av höger container */
+    background-color: #2c2c2c;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
 }
 
-.output-container h2 {
-    margin-top: 0;
-    color: #d1d1d1; /* Ljusare grå för rubriker */
-    font-size: 18px;
-    margin-bottom: 15px;
+table {
+    width: 100%; /* Se till att tabellen fyller hela bredden */
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #4a4a4a;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #3b3b3b;
+    color: #e0e0e0;
+}
+
+td {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+}
+
+/* Output-sektion */
+.output-container {
+    flex: 1; /* Låt output fylla halva höjden av höger container */
+    background-color: #2c2c2c;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 }
 
 #output {
-    flex-grow: 1;
+    flex-grow: 1; /* Gör så att output fyller hela utrymmet */
     overflow-y: auto;
     white-space: pre-wrap;
     background-color: #3b3b3b; /* Mörkare bakgrund för output-rutan */
@@ -150,26 +183,7 @@ body {
         flex-direction: column;
     }
 
-    .output-container {
+    .output-container, .table-container {
         width: 100%;
     }
-}
-/* Lägg till nya stilar för tabellen */        
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-th, td {
-    border: 1px solid #4a4a4a;
-    padding: 8px;
-    text-align: left;
-}
-th {
-    background-color: #3b3b3b;
-    color: #e0e0e0;
-}
-td {
-    background-color: #2c2c2c;
-    color: #e0e0e0;
 }
