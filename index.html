@@ -42,10 +42,12 @@
                 <input type="number" id="interval" placeholder="Intervall i sekunder">
             </div>
 
-            <button onclick="handleFetch()">Starta hämtning</button>
-        
+            <div class="form-group">
+                <button onclick="handleFetch()">Starta hämtning</button>
+                <button id="openChartBtn">Visa graf</button>
+                <button id="stoppFetching">Stoppa hämtning</button>                
+            </div>
         </div>
-
         <!-- Höger container för Data Table och Output -->
         <div class="right-container">
             <!-- Tabellcontainer -->
@@ -74,6 +76,8 @@
         </div>
     </div>
     <!-- Extern JavaScript-fil -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="renderer.js"></script>
+
 </body>
 </html>

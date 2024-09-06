@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graf</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="chart-container">
+        <h2>Data Visualization</h2>
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+        // Exempel på hur du initialiserar grafen i det nya fönstret
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [], // Dynamiska data
+                datasets: [{
+                    label: 'Värden',
+                    data: [], // Dynamiska data
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Tid'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Värde'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Exempel på hur du kan ta emot data från huvudfönstret om nödvändigt
+        window.addEventListener('message', function(event) {
+            const { labels, values } = event.data;
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = values;
+            chart.update();
+        });
+    </script>
+</body>
+</html>

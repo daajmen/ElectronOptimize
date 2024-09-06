@@ -1,11 +1,13 @@
 import { fetchToken, fetchData } from './services/api.js';
 import { saveIpToLocalStorage, updateIpDropdown } from './utils/ipManager.js';
 import { updateTable } from './utils/tableManager.js'; // Importera funktionen här
+import { initializeChart, updateChart } from './utils/chartManager.js'; // Importera Chart.js-hanteraren
 
 let fetchInterval;
 
 document.addEventListener('DOMContentLoaded', () => {
     updateIpDropdown();
+    initializeChart(); // Initiera Chart.js när sidan laddas    
 });
 
 function updateOutput(message) {
@@ -44,5 +46,12 @@ function handleFetch() {
         updateOutput('Kunde inte hämta token: ' + error.message);
     });
 }
+document.getElementById('openChartBtn').addEventListener('click', () => {
+    // Öppna ett nytt fönster
+    const chartWindow = window.open('chartWindow.html', 'chartWindow', 'width=800,height=600');
+});
+
+
+
 
 window.handleFetch = handleFetch;

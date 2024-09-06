@@ -34,5 +34,12 @@ ipcMain.handle('save-measurement', (event, data) => {
     const { timestamp, measurement, setpoint, valve, P, I, D } = data;
     saveMeasurement(timestamp, measurement, setpoint, valve, P, I, D); // Använd funktionen från database.js
 });
+ipcMain.handle('get-measurements', (event) => {
+    return new Promise((resolve, reject) => {
+        getMeasurements((data) => {
+            resolve(data);
+        });
+    });
+});
 
 app.whenReady().then(createWindow);

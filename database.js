@@ -1,4 +1,3 @@
-
 const fs = require('fs');
 const path = require('path');
 
@@ -35,11 +34,7 @@ db.serialize(() => {
     });
 });
 
-
-
-
-
-// Stäng databasen när den inte längre behövs
+// Stäng databasen när den inte längre behövsa
 function closeDatabase() {
     db.close((err) => {
         if (err) {
